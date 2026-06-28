@@ -2201,18 +2201,13 @@ function __initGlobe(){
     if(THREE.sRGBEncoding)t.encoding=THREE.sRGBEncoding;return t;
   }
   const ICE_TOP=2.6;
-  // wall sits flush on the disc rim: base radius = R (the disc edge), leaning slightly outward as it rises.
-  // Segment-aligned ripple: ICE_FACETS lobes with an exact 4 radial segments each, so the sine
-  // displacement tiles evenly and closes across the cylinder's start/end seam (theta 0 = 2*pi) with
-  // no gap and no mismatched facet — the source of the visible seam.
-  const ICE_FACETS=60, ICE_SEG=ICE_FACETS*4;
-  const iceGeo=new THREE.CylinderGeometry(R+0.22,R,ICE_TOP,ICE_SEG,1,true);
+  // wall sits flush on the disc rim: base radius = R (the disc edge), leaning slightly outward as it rises
+  const iceGeo=new THREE.CylinderGeometry(R+0.22,R,ICE_TOP,256,1,true);
   const ip=iceGeo.attributes.position;          // gentle, regular faceting (smooth)
   for(let i=0;i<ip.count;i++){const ang=Math.atan2(ip.getZ(i),ip.getX(i));
-    const bump=0.04*Math.sin(ang*ICE_FACETS);const baseR=Math.hypot(ip.getX(i),ip.getZ(i));
+    const bump=0.04*Math.cos(ang*64);const baseR=Math.hypot(ip.getX(i),ip.getZ(i));
     const r=baseR+bump; ip.setX(i,Math.cos(ang)*r); ip.setZ(i,Math.sin(ang)*r);}
   iceGeo.computeVertexNormals();
-  // opaque wall — kills the see-through seam where the front face, back face and doubled rim edge overlapped
   const ice=new THREE.Mesh(iceGeo,new THREE.MeshStandardMaterial({
     map:iceTex(),color:0xffffff,roughness:0.22,metalness:0.0,transparent:false,opacity:1.0,
     side:THREE.DoubleSide,emissive:0x9cc2e8,emissiveIntensity:0.16}));
@@ -2826,7 +2821,7 @@ function __initGlobe(){
 </script>
 <script>
 (function(){
-  var GA_ID="G-XXXXXXXXXX"; /* <-- replace with your Google Analytics 4 Measurement ID */
+  var GA_ID="G-KMLSVKYQZ5"; /* <-- replace with your Google Analytics 4 Measurement ID */
   var KEY="fep_consent_v1";
   var configured = GA_ID && GA_ID.indexOf("XXXX")===-1;
   window.dataLayer=window.dataLayer||[];
