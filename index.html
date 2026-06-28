@@ -677,6 +677,9 @@
   .legal-links{margin-top:14px;font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;}
   .legal-links a{color:var(--parchment-dim);text-decoration:none;}
   .legal-links a:hover{color:var(--brass-bright);}
+  .visit-count{margin-top:13px;font-family:var(--mono);font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--patina);}
+  .visit-count b{color:var(--brass-bright);font-weight:700;letter-spacing:0.08em;}
+  .visit-count[hidden]{display:none;}
 </style>
 <noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript>
 </head>
@@ -1996,7 +1999,33 @@
 <footer>
   FLAT EARTH PAPER · <span class="com">an exhibit of belief, not a map of the world</span>
   <div class="legal-links"><a href="privacy">Privacy</a> · <a href="terms">Terms</a></div>
+  <div class="visit-count" id="visitCount" hidden><b id="visitNum">—</b> curious minds have visited</div>
 </footer>
+
+<script>
+/* Footer visitor counter — aggregate hit count via counterapi.dev. No cookies,
+   no personal data: it only increments and reads a single shared number.
+   Counts a given browser at most once per 12h (localStorage-guarded) but reads
+   the live total on every load. Silently stays hidden if the service is down. */
+(function(){
+  var BASE="https://api.counterapi.dev/v1/flatearthpaper/visits";
+  var el=document.getElementById("visitCount"), num=document.getElementById("visitNum");
+  if(!el||!num||!window.fetch) return;
+  var KEY="fep_visit_ts", now=Date.now(), last=0;
+  try{ last=parseInt(localStorage.getItem(KEY)||"0",10)||0; }catch(e){}
+  var fresh=(now-last)>43200000;                 // 12h
+  fetch(BASE+(fresh?"/up":"/"),{cache:"no-store"})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(d){
+      if(d&&typeof d.count==="number"){
+        num.textContent=d.count.toLocaleString();
+        el.hidden=false;
+        if(fresh){ try{localStorage.setItem(KEY,String(now));}catch(e){} }
+      }
+    })
+    .catch(function(){ /* service unreachable → counter stays hidden */ });
+})();
+</script>
 
 <script>
 /* =========================================================
