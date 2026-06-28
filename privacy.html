@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy · Flat Earth Paper</title>
+  <meta name="description" content="How Flat Earth Paper handles analytics, cookies and the information you submit." />
+  <link rel="canonical" href="https://flatearthpaper.com/privacy" />
+  <meta name="theme-color" content="#0B1026" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <link rel="manifest" href="site.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+  :root{--abyss:#0B1026;--abyss-2:#0d1430;--parchment:#EDE3CC;--parchment-dim:#b9b09a;--brass:#C8A24C;--brass-bright:#E6C572;--line:rgba(200,162,76,0.22);--display:"Libre Franklin",sans-serif;--body:"Inter",sans-serif;--mono:"Space Mono",monospace;}
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--abyss);color:var(--parchment);font-family:var(--body);line-height:1.7;-webkit-font-smoothing:antialiased;}
+  a{color:var(--brass-bright);}
+  .legal-top{position:sticky;top:0;z-index:10;background:rgba(11,16,38,0.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+  .legal-top .inner{max-width:760px;margin:0 auto;padding:13px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+  .legal-brand{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--parchment);text-decoration:none;}
+  .legal-brand svg{width:26px;height:26px;}
+  .legal-back{font-family:var(--mono);font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--parchment-dim);text-decoration:none;white-space:nowrap;}
+  .legal-back:hover{color:var(--brass-bright);}
+  main.legal{max-width:760px;margin:0 auto;padding:54px 24px 80px;}
+  .legal h1{font-family:var(--display);font-weight:800;font-size:clamp(30px,5vw,44px);letter-spacing:-0.01em;margin:0 0 6px;}
+  .legal .updated{font-family:var(--mono);font-size:12px;color:var(--parchment-dim);margin-bottom:30px;letter-spacing:0.04em;}
+  .legal h2{font-family:var(--display);font-weight:700;font-size:21px;margin:40px 0 12px;color:var(--parchment);}
+  .legal h3{font-family:var(--display);font-weight:600;font-size:16px;margin:22px 0 8px;color:var(--parchment);}
+  .legal p,.legal li{color:var(--parchment-dim);font-size:16px;}
+  .legal ul{padding-left:20px;margin:10px 0;}
+  .legal li{margin:7px 0;}
+  .legal strong{color:var(--parchment);font-weight:600;}
+  .note-box{border:1px solid var(--line);background:rgba(200,162,76,0.06);border-radius:12px;padding:15px 20px;margin:0 0 34px;}
+  .note-box p{margin:0;font-size:14px;color:var(--parchment-dim);}
+  .summary-box{border-left:2px solid var(--brass);background:rgba(255,255,255,0.02);border-radius:0 10px 10px 0;padding:14px 22px;margin:0 0 30px;}
+  .summary-box p{margin:0;color:var(--parchment);}
+  .btn-link{background:none;border:none;color:var(--brass-bright);font:inherit;cursor:pointer;padding:0;text-decoration:underline;}
+  .legal-foot{max-width:760px;margin:0 auto;padding:28px 24px 60px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px;letter-spacing:0.06em;color:var(--parchment-dim);text-transform:uppercase;display:flex;flex-wrap:wrap;gap:8px 16px;}
+  .legal-foot a{color:var(--parchment-dim);text-decoration:none;}
+  .legal-foot a:hover{color:var(--brass-bright);}
+  :focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px;}
+
+  .cookie-banner{position:fixed;left:0;right:0;bottom:0;z-index:9000;background:rgba(8,13,28,0.97);border-top:1px solid var(--line);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);padding:16px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 22px;}
+  .cookie-banner p{margin:0;max-width:620px;color:var(--parchment-dim);font-size:13.5px;line-height:1.6;}
+  .cookie-banner a{color:var(--brass-bright);}
+  .cb-actions{display:flex;gap:10px;flex-shrink:0;}
+  .cookie-banner button{font-family:var(--mono);font-size:12px;letter-spacing:0.08em;text-transform:uppercase;border-radius:24px;padding:9px 18px;cursor:pointer;border:1px solid var(--line);}
+  .cb-accept{background:var(--brass);color:var(--abyss);border-color:var(--brass-bright);}
+  .cb-accept:hover{background:var(--brass-bright);}
+  .cb-decline{background:transparent;color:var(--parchment-dim);}
+  .cb-decline:hover{color:var(--parchment);border-color:var(--brass);}
+  </style>
+</head>
+<body>
+  <header class="legal-top"><div class="inner">
+    <a class="legal-brand" href="/"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M10 30a14 14 0 0 1 28 0" stroke="#C8A24C" stroke-width="1.6"/><line x1="7" y1="31" x2="41" y2="31" stroke="#E6C572" stroke-width="2"/><circle cx="24" cy="18" r="4" fill="#E6C572"/><circle cx="33" cy="22.5" r="1.8" fill="#b9b09a"/></svg> Flat Earth Paper</a>
+    <a class="legal-back" href="/">Back to the atlas</a>
+  </div></header>
+  <main class="legal">
+    <h1>Privacy Policy</h1>
+    <div class="updated">Last updated: 28 June 2026</div>
+    <div class="note-box"><p>This policy is a starting template, not legal advice. Privacy laws differ by country and change over time. Please review and adapt it with a qualified professional before publishing, and fill in the items marked in brackets.</p></div>
+    <div class="summary-box"><p>The short version: privacy friendly analytics run only if you accept them. Anything you post in the guestbook or in community features is public. We do not sell your information. Items you save stay on your own device.</p></div>
+
+    <h2>1. Who we are</h2>
+    <p>Flat Earth Paper (the site) is an entertainment and concept work that gathers flat earth topics, maps, models and history in one place for the curious to read. In this policy, words like we, us and our refer to the operator of this site. For any privacy question or request, contact us at <strong>[your contact email]</strong>.</p>
+
+    <h2>2. Information we collect</h2>
+    <h3>Analytics</h3>
+    <p>If you accept analytics cookies, we use <strong>Google Analytics 4</strong> to understand which pages are read and how the site is used. This may include the pages you view, the approximate region derived from your IP address (collected with IP anonymisation enabled), your device and browser type, and how you arrived at the site. We do not use this to identify you personally. No analytics cookies are set unless you choose Accept in the cookie notice.</p>
+    <h3>Information you choose to submit</h3>
+    <p>If you write in the guestbook, or react to or submit a story in any community feature we may add, the content you enter, including any name you provide, is sent to us and may be displayed publicly on the site. Please do not include sensitive personal information in these submissions.</p>
+    <h3>Information stored on your device</h3>
+    <p>The site uses your browser local storage to remember things like the arguments you have saved, your sound and consent choices, and similar preferences. This information stays on your device and is not transmitted to us.</p>
+    <h3>Server logs</h3>
+    <p>Our hosting provider may automatically record standard technical information, such as IP addresses and request times, for security and reliable operation. [Confirm what your host retains and for how long.]</p>
+
+    <h2>3. Cookies and similar technologies</h2>
+    <p>We use two kinds of storage. <strong>Analytics cookies</strong> are set by Google Analytics and only after you accept them. <strong>Functional local storage</strong> remembers your preferences and choices and is necessary for those features to work. You can withdraw or change your analytics choice at any time using the button below, then choosing again.</p>
+    <p><button type="button" class="btn-link" onclick="window.fepResetConsent&&window.fepResetConsent()">Manage cookie choices</button></p>
+
+    <h2>4. How we use information</h2>
+    <ul>
+      <li>To operate, maintain and improve the site.</li>
+      <li>To understand, in aggregate, which content is read and how the site performs.</li>
+      <li>To display the guestbook entries and community contributions that visitors choose to submit.</li>
+      <li>To keep the site secure and to address technical problems.</li>
+    </ul>
+
+    <h2>5. Legal bases (for visitors in the EEA and UK)</h2>
+    <p>Where this applies, we rely on your <strong>consent</strong> for analytics cookies, on our <strong>legitimate interests</strong> in running and securing the site for functional storage and server logs, and on your decision to submit content for anything you post publicly. You may withdraw consent at any time.</p>
+
+    <h2>6. Sharing and third parties</h2>
+    <p>We do not sell your personal information. Information may be processed by the services that make the site work, including <strong>Google</strong> (Analytics), our <strong>hosting provider</strong>, and, if community features are enabled, our database provider. These providers process data on our behalf or under their own terms. We encourage you to review Google's privacy policy for how it handles analytics data.</p>
+
+    <h2>7. Data retention</h2>
+    <p>Analytics data is retained according to the settings in our Google Analytics account. Content you submit publicly remains visible until it is removed by you on request or by us. Local storage remains on your device until you clear it.</p>
+
+    <h2>8. Your rights</h2>
+    <p>Depending on where you live, you may have the right to access, correct, delete or restrict the processing of your personal information, to object to certain processing, and to withdraw consent. To make a request, contact us at <strong>[your contact email]</strong>. Visitors in California may have additional rights regarding the sale or sharing of personal information; we do not sell or share personal information as those terms are commonly defined.</p>
+
+    <h2>9. Children</h2>
+    <p>The site is not directed to children under the age of 16, and we do not knowingly collect personal information from them. If you believe a child has provided us with information, please contact us so we can remove it.</p>
+
+    <h2>10. International processing</h2>
+    <p>Our providers may process information in countries other than your own, including the United States. Where required, appropriate safeguards are applied by those providers.</p>
+
+    <h2>11. Security</h2>
+    <p>We take reasonable measures to protect information, but no method of transmission or storage is completely secure, and we cannot guarantee absolute security.</p>
+
+    <h2>12. Changes to this policy</h2>
+    <p>We may update this policy from time to time. The date at the top shows when it was last revised. Significant changes will be reflected here.</p>
+
+    <h2>13. Contact</h2>
+    <p>Questions about this policy can be sent to <strong>[your contact email]</strong>.</p>
+  </main>
+  <footer class="legal-foot">
+    <span>FLAT EARTH PAPER</span>
+    <a href="/">Home</a>
+    <a href="megathread">The 133</a>
+    <a href="privacy">Privacy</a>
+    <a href="terms">Terms</a>
+  </footer>
+  <script>
+(function(){
+  var GA_ID="G-XXXXXXXXXX"; /* <-- replace with your Google Analytics 4 Measurement ID */
+  var KEY="fep_consent_v1";
+  var configured = GA_ID && GA_ID.indexOf("XXXX")===-1;
+  window.dataLayer=window.dataLayer||[];
+  function gtag(){dataLayer.push(arguments);}
+  window.gtag=window.gtag||gtag;
+  if(!configured){ window.fepResetConsent=function(){}; return; }
+  gtag("consent","default",{ad_storage:"denied",analytics_storage:"denied",ad_user_data:"denied",ad_personalization:"denied"});
+  function loadGA(){
+    if(window.__gaLoaded)return; window.__gaLoaded=true;
+    var s=document.createElement("script"); s.async=true;
+    s.src="https://www.googletagmanager.com/gtag/js?id="+GA_ID;
+    document.head.appendChild(s);
+    gtag("js",new Date());
+    gtag("config",GA_ID,{anonymize_ip:true});
+  }
+  function grant(){ gtag("consent","update",{analytics_storage:"granted"}); loadGA(); }
+  var saved=null; try{saved=localStorage.getItem(KEY);}catch(e){}
+  if(saved==="granted"){ grant(); }
+  else if(saved!=="denied"){
+    document.addEventListener("DOMContentLoaded",function(){
+      var b=document.createElement("div"); b.className="cookie-banner"; b.setAttribute("role","dialog"); b.setAttribute("aria-label","Cookie notice");
+      b.innerHTML='<p>This site uses Google Analytics to understand which pages are read. No analytics cookies are set unless you accept. See our <a href="privacy">Privacy Policy</a>.</p><div class="cb-actions"><button type="button" class="cb-accept">Accept</button><button type="button" class="cb-decline">Decline</button></div>';
+      document.body.appendChild(b);
+      b.querySelector(".cb-accept").addEventListener("click",function(){ try{localStorage.setItem(KEY,"granted");}catch(e){} grant(); b.remove(); });
+      b.querySelector(".cb-decline").addEventListener("click",function(){ try{localStorage.setItem(KEY,"denied");}catch(e){} b.remove(); });
+    });
+  }
+  window.fepResetConsent=function(){ try{localStorage.removeItem(KEY);}catch(e){} location.reload(); };
+})();
+  </script>
+</body>
+</html>

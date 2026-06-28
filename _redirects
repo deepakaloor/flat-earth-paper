@@ -1,0 +1,6 @@
+# Netlify & Cloudflare Pages: redirect old .html URLs to clean ones.
+# (Both hosts already serve /megathread from megathread.html automatically.)
+/index.html      /            301!
+/megathread.html /megathread  301!
+/privacy.html    /privacy     301!
+/terms.html      /terms       301!

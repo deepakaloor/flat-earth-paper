@@ -1,0 +1,37 @@
+{
+  "name": "Flat Earth Paper",
+  "short_name": "Flat Earth Paper",
+  "description": "An interactive exhibition of the flat earth: its maps, models, observations and the people who carry the belief.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0B1026",
+  "theme_color": "#0B1026",
+  "lang": "en",
+  "categories": [
+    "education",
+    "reference",
+    "entertainment"
+  ],
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ]
+}
