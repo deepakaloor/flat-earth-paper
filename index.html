@@ -2201,15 +2201,20 @@ function __initGlobe(){
     if(THREE.sRGBEncoding)t.encoding=THREE.sRGBEncoding;return t;
   }
   const ICE_TOP=2.6;
-  // wall sits flush on the disc rim: base radius = R (the disc edge), leaning slightly outward as it rises
-  const iceGeo=new THREE.CylinderGeometry(R+0.22,R,ICE_TOP,256,1,true);
+  // wall sits flush on the disc rim: base radius = R (the disc edge), leaning slightly outward as it rises.
+  // Segment-aligned ripple: ICE_FACETS lobes with an exact 4 radial segments each, so the sine
+  // displacement tiles evenly and closes across the cylinder's start/end seam (theta 0 = 2*pi) with
+  // no gap and no mismatched facet — the source of the visible seam.
+  const ICE_FACETS=60, ICE_SEG=ICE_FACETS*4;
+  const iceGeo=new THREE.CylinderGeometry(R+0.22,R,ICE_TOP,ICE_SEG,1,true);
   const ip=iceGeo.attributes.position;          // gentle, regular faceting (smooth)
   for(let i=0;i<ip.count;i++){const ang=Math.atan2(ip.getZ(i),ip.getX(i));
-    const bump=0.04*Math.sin(ang*60);const baseR=Math.hypot(ip.getX(i),ip.getZ(i));
+    const bump=0.04*Math.sin(ang*ICE_FACETS);const baseR=Math.hypot(ip.getX(i),ip.getZ(i));
     const r=baseR+bump; ip.setX(i,Math.cos(ang)*r); ip.setZ(i,Math.sin(ang)*r);}
   iceGeo.computeVertexNormals();
+  // opaque wall — kills the see-through seam where the front face, back face and doubled rim edge overlapped
   const ice=new THREE.Mesh(iceGeo,new THREE.MeshStandardMaterial({
-    map:iceTex(),color:0xffffff,roughness:0.22,metalness:0.0,transparent:true,opacity:0.9,
+    map:iceTex(),color:0xffffff,roughness:0.22,metalness:0.0,transparent:false,opacity:1.0,
     side:THREE.DoubleSide,emissive:0x9cc2e8,emissiveIntensity:0.16}));
   ice.position.y=ICE_TOP/2; ice.receiveShadow=true; world.add(ice);   // base at y=0 = disc level
   // crisp top rim, matched to the wall's top radius
