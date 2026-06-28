@@ -195,7 +195,7 @@
   @keyframes bob{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(6px);}}
   @media(max-width:620px){
     /* bottom dock: presets sit directly above the wrapping toggles, always clear */
-    .hud-dock{display:flex;flex-direction:column;align-items:center;gap:9px;position:fixed;
+    .hud-dock{display:flex;flex-direction:column;align-items:center;gap:9px;position:absolute;
       left:50%;transform:translateX(-50%);bottom:5vh;width:min(94vw,330px);z-index:6;pointer-events:none;}
     .hud-dock>*{position:static;transform:none;top:auto;right:auto;bottom:auto;left:auto;pointer-events:auto;}
     .view-presets{justify-content:center;max-width:100%;}
