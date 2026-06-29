@@ -341,6 +341,9 @@
   :focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px;}
   .surprise-ghost{background:transparent;color:var(--brass-bright);}
   .surprise-ghost:hover{background:rgba(200,162,76,0.12);color:var(--parchment);}
+  /* inactive view-toggle buttons render as ghosts; the active one keeps the filled .feedbtn look */
+  .feedbtn.ghost{background:transparent;color:var(--brass-bright);}
+  .feedbtn.ghost:hover{background:rgba(200,162,76,0.12);color:var(--parchment);}
   .cookie-banner{position:fixed;left:0;right:0;bottom:0;z-index:9000;background:rgba(8,13,28,0.97);border-top:1px solid var(--line);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);padding:16px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 22px;}
   .cookie-banner p{margin:0;max-width:620px;color:var(--parchment-dim);font-size:13.5px;line-height:1.6;}
   .cookie-banner a{color:var(--brass-bright);}
@@ -397,8 +400,9 @@
     </div>
     <div class="chips" id="chips"></div>
     <div class="count-line" id="countline"></div>
-    <button class="feedbtn" id="feedbtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="7" rx="2"/><rect x="4" y="14" width="16" height="6" rx="2"/></svg> Scroll feed</button>
-    <button class="feedbtn surprise-ghost" id="surprisebtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M20 4L9.5 14.5"/><path d="M21 16v5h-5"/><path d="M4 4l5.5 5.5"/><path d="M15 15l6 6"/></svg> Surprise me</button>
+    <button class="feedbtn" id="gridbtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg> Grid</button>
+    <button class="feedbtn ghost" id="feedbtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="7" rx="2"/><rect x="4" y="14" width="16" height="6" rx="2"/></svg> Scroll feed</button>
+    <button class="feedbtn ghost" id="surprisebtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M20 4L9.5 14.5"/><path d="M21 16v5h-5"/><path d="M4 4l5.5 5.5"/><path d="M15 15l6 6"/></svg> Surprise me</button>
   </div>
 </div>
 
@@ -925,11 +929,14 @@
   function openFeed(startN){
     if(!buildFeed(startN))return;
     feed.classList.add("open"); document.body.classList.add("feed-lock");
+    setActiveView("feed");
     feedHint.style.display="block";
     var hide=function(){feedHint.style.display="none";feedScroll.removeEventListener("scroll",hide);};
     feedScroll.addEventListener("scroll",hide);
   }
-  function closeFeed(){feed.classList.remove("open"); document.body.classList.remove("feed-lock");}
+  function closeFeed(){feed.classList.remove("open"); document.body.classList.remove("feed-lock"); setActiveView("grid");}
+  // Grid is the default view; toggle which button reads as "active" (filled vs ghost).
+  function setActiveView(v){ var gb=document.getElementById("gridbtn"),fb=document.getElementById("feedbtn"); if(gb)gb.classList.toggle("ghost",v!=="grid"); if(fb)fb.classList.toggle("ghost",v!=="feed"); }
   feed.querySelector(".feed-close").addEventListener("click",closeFeed);
   feedScroll.addEventListener("click",function(e){
     var t=e.target.closest?e.target.closest(".fs-btn"):null; if(!t)return;
@@ -941,6 +948,8 @@
   window.addEventListener("keydown",function(e){if(e.key==="Escape"&&feed.classList.contains("open"))closeFeed();});
   var feedbtn=document.getElementById("feedbtn");
   if(feedbtn)feedbtn.addEventListener("click",function(){openFeed();});
+  var gridbtn=document.getElementById("gridbtn");
+  if(gridbtn)gridbtn.addEventListener("click",function(){ closeFeed(); var g=document.querySelector(".grid"); if(g)g.scrollIntoView({behavior:"smooth",block:"start"}); });
 
   function goToHash(){
     var m=(location.hash||"").match(/^#arg-(\d+)$/); if(!m)return;
