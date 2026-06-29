@@ -966,12 +966,12 @@
     SUPABASE_URL:       "https://fltqccfthhwogsrhccpb.supabase.co",
     SUPABASE_ANON_KEY:  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZsdHFjY2Z0aGh3b2dzcmhjY3BiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3MjA0NTMsImV4cCI6MjA5ODI5NjQ1M30.R6_dadjuUDTCVASPpM1Xss1MqzkR7nSw94ppZif_rWw",
     FUNCTION_URL:       "https://fltqccfthhwogsrhccpb.supabase.co/functions/v1/post-comment",
-    RECAPTCHA_SITE_KEY: "6Lfl5jstAAAAAHGONdAq8lJoZ6iEDscSymSZJGnQ"   // reCAPTCHA v2 public site key (safe in page)
+    TURNSTILE_SITE_KEY: ""   // Cloudflare Turnstile public site key (safe in page) — paste it to go live
   };
 
   var $=function(id){return document.getElementById(id);};
   if(!$('comments')) return;
-  var cloud = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY && CONFIG.FUNCTION_URL && CONFIG.RECAPTCHA_SITE_KEY);
+  var cloud = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY && CONFIG.FUNCTION_URL && CONFIG.TURNSTILE_SITE_KEY);
 
   /* ---------- shared rendering ---------- */
   function whenFmt(ts){ if(!ts) return ''; try{ var d=new Date(ts); return d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})+' \u00b7 '+d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } }
@@ -993,7 +993,7 @@
   }
 
   /* ============================================================
-     CLOUD MODE  ,  Supabase + reCAPTCHA
+     CLOUD MODE  ,  Supabase + Cloudflare Turnstile
      ============================================================ */
   if(cloud){
     $('mode-pill').textContent='shared guestbook';
@@ -1002,10 +1002,10 @@
     $('lockmsg').style.display='none';
     $('cnote').textContent='Posted entries are public and saved to the shared guestbook. Please keep it respectful and leave out real personal details.';
 
-    window.__recaptchaWidget=null;
-    window.__recaptchaReady=function(){ try{ window.__recaptchaWidget=grecaptcha.render('recaptcha-slot',{sitekey:CONFIG.RECAPTCHA_SITE_KEY,theme:'dark'}); }catch(e){} };
+    window.__turnstileWidget=null;
+    window.__turnstileReady=function(){ try{ window.__turnstileWidget=turnstile.render('#recaptcha-slot',{sitekey:CONFIG.TURNSTILE_SITE_KEY,theme:'dark'}); }catch(e){} };
     var rs=document.createElement('script');
-    rs.src='https://www.google.com/recaptcha/api.js?onload=__recaptchaReady&render=explicit';
+    rs.src='https://challenges.cloudflare.com/turnstile/v0/api.js?onload=__turnstileReady&render=explicit';
     rs.async=true; rs.defer=true; document.head.appendChild(rs);
 
     function fetchComments(){
@@ -1020,15 +1020,15 @@
     $('c-post').addEventListener('click',function(){
       var msg=$('cnote');
       var t=$('c-text').value.trim(); if(!t){ msg.textContent='Please write something first.'; return; }
-      var token=''; try{ token=grecaptcha.getResponse(window.__recaptchaWidget); }catch(e){}
-      if(!token){ msg.textContent='Please tick the "I am not a robot" box first.'; return; }
+      var token=''; try{ token=turnstile.getResponse(window.__turnstileWidget); }catch(e){}
+      if(!token){ msg.textContent='Please complete the verification check first.'; return; }
       var name=($('c-name').value.trim()||'Anonymous Visitor').slice(0,40);
       var btn=$('c-post'); btn.disabled=true; btn.textContent='Posting...';
       fetch(CONFIG.FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+CONFIG.SUPABASE_ANON_KEY},body:JSON.stringify({name:name,body:t,token:token})})
         .then(function(r){ return r.json().then(function(j){ return {ok:r.ok,j:j}; }); })
         .then(function(res){
           btn.disabled=false; btn.textContent='Post entry';
-          try{ grecaptcha.reset(window.__recaptchaWidget); }catch(e){}
+          try{ turnstile.reset(window.__turnstileWidget); }catch(e){}
           if(res.ok){ $('c-text').value=''; $('c-name').value=''; msg.textContent='Thank you. Your entry is posted.'; fetchComments(); }
           else { msg.textContent=(res.j&&res.j.error)?res.j.error:'Something went wrong. Please try again.'; }
         })
