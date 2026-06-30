@@ -57,3 +57,18 @@ create index if not exists comments_created_at_idx
   on public.comments (created_at desc);
 create index if not exists comments_parent_id_idx
   on public.comments (parent_id);
+
+-- ============================================================
+-- Anti-spam: per-IP rate limiting for the post-comment Edge Function.
+-- Stores only a salted hash of the IP, locked away from the public.
+-- ============================================================
+create table if not exists public.rate_events (
+  id       bigint generated always as identity primary key,
+  ip_hash  text        not null,
+  at       timestamptz not null default now()
+);
+create index if not exists rate_events_iphash_at_idx
+  on public.rate_events (ip_hash, at);
+alter table public.rate_events enable row level security;
+-- No anon/authenticated policy on purpose: only the service-role Edge
+-- Function (which bypasses RLS) may read or write this table.

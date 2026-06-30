@@ -307,7 +307,7 @@
     if(!token){ note.textContent='Please complete the verification check first.'; return; }
     var name=(nm.value.trim()||'Anonymous Visitor').slice(0,40);
     post.disabled=true; post.textContent='Posting...';
-    fetch(CONFIG.FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+CONFIG.SUPABASE_ANON_KEY},body:JSON.stringify({name:name, body:t, token:token, parent_id:parentId})})
+    fetch(CONFIG.FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+CONFIG.SUPABASE_ANON_KEY},body:JSON.stringify({name:name, body:t, token:token, parent_id:parentId, hp:(f.__hp?f.__hp.value:'')})})
       .then(function(r){ return r.json().then(function(j){ return {ok:r.ok,j:j}; }); })
       .then(function(res){
         post.disabled=false; post.textContent='Post reply';
@@ -329,7 +329,8 @@
     row.appendChild(nm); row.appendChild(post);
     var slot=document.createElement('div'); slot.className='recaptcha-slot'; f.__slot=slot;
     var note=document.createElement('div'); note.className='cnote';
-    f.appendChild(ta); f.appendChild(row); f.appendChild(slot); f.appendChild(note);
+    var hp=document.createElement('input'); hp.type='text'; hp.name='hp_check'; hp.tabIndex=-1; hp.setAttribute('autocomplete','off'); hp.setAttribute('aria-hidden','true'); hp.style.cssText='position:absolute;left:-9999px;top:auto;width:1px;height:1px;opacity:0;'; f.__hp=hp;
+    f.appendChild(ta); f.appendChild(row); f.appendChild(slot); f.appendChild(hp); f.appendChild(note);
     post.addEventListener('click',function(){ submitReply(parentId, f, ta, nm, post, note, rwrap); });
     return f;
   }
@@ -385,6 +386,7 @@
     $('cform').classList.remove('locked');
     $('lockmsg').style.display='none';
     $('cnote').textContent='Posted entries are public and saved to the shared guestbook. Please keep it respectful and leave out real personal details.';
+    (function(){ var hp=document.createElement('input'); hp.type='text'; hp.id='hp_main'; hp.name='hp_check'; hp.tabIndex=-1; hp.setAttribute('autocomplete','off'); hp.setAttribute('aria-hidden','true'); hp.style.cssText='position:absolute;left:-9999px;top:auto;width:1px;height:1px;opacity:0;'; $('cform').appendChild(hp); })();
 
     window.__turnstileWidget=null;
     window.__turnstileReady=function(){ try{ window.__turnstileWidget=turnstile.render('#recaptcha-slot',{sitekey:CONFIG.TURNSTILE_SITE_KEY,theme:'dark'}); }catch(e){} };
@@ -417,7 +419,7 @@
       if(!token){ msg.textContent='Please complete the verification check first.'; return; }
       var name=($('c-name').value.trim()||'Anonymous Visitor').slice(0,40);
       var btn=$('c-post'); btn.disabled=true; btn.textContent='Posting...';
-      fetch(CONFIG.FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+CONFIG.SUPABASE_ANON_KEY},body:JSON.stringify({name:name,body:t,token:token})})
+      fetch(CONFIG.FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+CONFIG.SUPABASE_ANON_KEY},body:JSON.stringify({name:name,body:t,token:token,hp:($('hp_main')?$('hp_main').value:'')})})
         .then(function(r){ return r.json().then(function(j){ return {ok:r.ok,j:j}; }); })
         .then(function(res){
           btn.disabled=false; btn.textContent='Post entry';
