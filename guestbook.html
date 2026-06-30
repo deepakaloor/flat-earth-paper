@@ -268,6 +268,8 @@
   function whenFmt(ts){ if(!ts) return ''; try{ var d=new Date(ts); return d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})+' · '+d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } }
   /* ---- likes + replies (shared component; same backend on all pages) ---- */
   var cloudFetch=function(){};
+  var GB_ERR={blocked:"Your message was blocked.",links_not_allowed:"Links aren’t allowed in the guestbook — please remove any URLs.",captcha_failed:"Human check failed. Please try again.",rate_limited:"You’re posting too fast — please wait a moment.",missing_fields:"Please write something first."};
+  function gbErr(j){ var c=(j&&j.error)?String(j.error):''; if(GB_ERR[c]) return GB_ERR[c]; if(c&&c.indexOf(' ')>-1) return c; return 'Something went wrong. Please try again.'; }
   function likedSet(){ try{ return JSON.parse(localStorage.getItem('fep_liked_v1'))||[]; }catch(e){ return []; } }
   function addLiked(id){ try{ var a=likedSet(); if(a.indexOf(String(id))<0){ a.push(String(id)); localStorage.setItem('fep_liked_v1',JSON.stringify(a)); } }catch(e){} }
   function likeComment(id, btn){
@@ -307,7 +309,7 @@
     if(!token){ note.textContent='Please complete the verification check first.'; return; }
     var name=(nm.value.trim()||'Anonymous Visitor').slice(0,40);
     post.disabled=true; post.textContent='Posting...';
-    fetch(CONFIG.FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+CONFIG.SUPABASE_ANON_KEY},body:JSON.stringify({name:name, body:t, token:token, parent_id:parentId, hp:(f.__hp?f.__hp.value:'')})})
+    fetch(CONFIG.FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+CONFIG.SUPABASE_ANON_KEY},body:JSON.stringify({name:name, body:t, token:token, parent_id:parentId, honeypot:(f.__hp?f.__hp.value:'')})})
       .then(function(r){ return r.json().then(function(j){ return {ok:r.ok,j:j}; }); })
       .then(function(res){
         post.disabled=false; post.textContent='Post reply';
@@ -316,7 +318,7 @@
           if(rwrap){ rwrap.appendChild(makeReply({who:name, body:t.slice(0,600), when:Date.now()})); }
           ta.value=''; nm.value=''; note.textContent='Reply posted.'; f.style.display='none';
           cloudFetch(); setTimeout(cloudFetch,1500);
-        } else { note.textContent=(res.j&&res.j.error)?res.j.error:'Something went wrong. Please try again.'; }
+        } else { note.textContent=gbErr(res.j); }
       })
       .catch(function(){ post.disabled=false; post.textContent='Post reply'; note.textContent='Network error. Please try again.'; });
   }
@@ -419,7 +421,7 @@
       if(!token){ msg.textContent='Please complete the verification check first.'; return; }
       var name=($('c-name').value.trim()||'Anonymous Visitor').slice(0,40);
       var btn=$('c-post'); btn.disabled=true; btn.textContent='Posting...';
-      fetch(CONFIG.FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+CONFIG.SUPABASE_ANON_KEY},body:JSON.stringify({name:name,body:t,token:token,hp:($('hp_main')?$('hp_main').value:'')})})
+      fetch(CONFIG.FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+CONFIG.SUPABASE_ANON_KEY},body:JSON.stringify({name:name,body:t,token:token,honeypot:($('hp_main')?$('hp_main').value:'')})})
         .then(function(r){ return r.json().then(function(j){ return {ok:r.ok,j:j}; }); })
         .then(function(res){
           btn.disabled=false; btn.textContent='Post entry';
@@ -430,7 +432,7 @@
             var list=$('clist'); if(list){ var pin=list.querySelector('.citem.pinned'); var node=makeItem({who:name, body:t.slice(0,600), when:Date.now()}); if(pin&&pin.nextSibling){ list.insertBefore(node, pin.nextSibling); } else { list.appendChild(node); } }
             fetchComments(); setTimeout(fetchComments, 1500);
           }
-          else { msg.textContent=(res.j&&res.j.error)?res.j.error:'Something went wrong. Please try again.'; }
+          else { msg.textContent=gbErr(res.j); }
         })
         .catch(function(){ btn.disabled=false; btn.textContent='Post entry'; msg.textContent='Network error. Please try again.'; });
     });
