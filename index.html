@@ -513,14 +513,26 @@
   .cbody{font-size:14.5px;line-height:1.55;color:var(--parchment);margin:0;white-space:pre-wrap;word-break:break-word;}
   .cempty{font-size:14px;color:var(--parchment-dim);font-style:italic;margin:0;}
   .cpin{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--brass);}
-  .cfoot{display:flex;justify-content:flex-end;margin-top:10px;}
-  .clike{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;letter-spacing:0.04em;color:var(--parchment-dim);background:rgba(255,255,255,0.02);border:1px solid var(--line);border-radius:20px;padding:5px 12px;cursor:pointer;transition:color .2s,border-color .2s,background .2s;}
+  .cfoot{display:flex;align-items:center;gap:10px;margin-top:11px;}
+  .clike{display:inline-flex;align-items:center;gap:6px;margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:0.04em;color:var(--parchment-dim);background:rgba(255,255,255,0.02);border:1px solid var(--line);border-radius:20px;padding:5px 12px;cursor:pointer;transition:color .2s,border-color .2s,background .2s;}
   .clike svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linejoin:round;transition:fill .2s,stroke .2s;}
   .clike:hover{color:var(--brass-bright);border-color:var(--brass);}
   .clike:disabled{cursor:default;}
   .clike.liked{color:#e08a8a;border-color:rgba(224,138,138,0.5);}
   .clike.liked svg{fill:#e08a8a;stroke:#e08a8a;}
   .clike-n{font-variant-numeric:tabular-nums;}
+  .creply-btn{font-family:var(--mono);font-size:11px;letter-spacing:0.04em;color:var(--parchment-dim);background:none;border:none;cursor:pointer;padding:5px 2px;text-decoration:underline;text-underline-offset:3px;}
+  .creply-btn:hover{color:var(--brass-bright);}
+  .creplies{margin:14px 0 0;padding-left:16px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:10px;}
+  .creplies:empty{display:none;}
+  .creply{background:rgba(255,255,255,0.015);border:1px solid var(--line);border-radius:7px;padding:11px 13px;}
+  .creply .cwho{font-size:13.5px;}
+  .creply .cbody{font-size:13.5px;}
+  .creply .cfoot{margin-top:8px;}
+  .creplyform{margin:12px 0 2px;padding-left:16px;border-left:2px solid var(--brass);}
+  .creplyform textarea{width:100%;min-height:64px;font-family:var(--body);font-size:14px;color:var(--parchment);background:#0e1830;border:1px solid var(--line);border-radius:6px;padding:11px;resize:vertical;box-sizing:border-box;}
+  .creplyform .crow{margin-top:8px;}
+  .creplyform .cnote{min-height:16px;}
   .recaptcha-slot{margin-top:14px;}
   .modepill{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--parchment-dim);border:1px solid var(--line);border-radius:20px;padding:4px 11px;margin-bottom:16px;}
 
@@ -1830,7 +1842,8 @@
 
   /* ---------- shared rendering ---------- */
   function whenFmt(ts){ if(!ts) return ''; try{ var d=new Date(ts); return d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})+' \u00b7 '+d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } }
-  /* ---- likes (shared; one tap per browser, tracked in localStorage) ---- */
+  /* ---- likes + replies (shared component; same backend on all pages) ---- */
+  var cloudFetch=function(){};
   function likedSet(){ try{ return JSON.parse(localStorage.getItem('fep_liked_v1'))||[]; }catch(e){ return []; } }
   function addLiked(id){ try{ var a=likedSet(); if(a.indexOf(String(id))<0){ a.push(String(id)); localStorage.setItem('fep_liked_v1',JSON.stringify(a)); } }catch(e){} }
   function likeComment(id, btn){
@@ -1845,7 +1858,63 @@
       .then(function(v){ if(v!=null && !isNaN(v)){ nEl.textContent=v; } btn.disabled=false; })
       .catch(function(){ btn.disabled=false; });
   }
-  function makeItem(c){
+  function makeLikeButton(c){
+    var btn=document.createElement('button'); btn.type='button';
+    btn.className='clike'+(likedSet().indexOf(String(c.id))>-1?' liked':'');
+    btn.setAttribute('aria-label','Like this entry');
+    btn.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg><span class="clike-n">'+(c.likes||0)+'</span>';
+    btn.addEventListener('click',function(){ likeComment(c.id, btn); });
+    return btn;
+  }
+  function makeReply(rc){
+    var r=document.createElement('div'); r.className='creply';
+    var head=document.createElement('div'); head.className='chead';
+    var who=document.createElement('span'); who.className='cwho'; who.textContent=rc.who||'Anonymous Visitor';
+    var when=document.createElement('span'); when.className='cwhen'; when.textContent=whenFmt(rc.when);
+    head.appendChild(who); head.appendChild(when);
+    var body=document.createElement('p'); body.className='cbody'; body.textContent=rc.body;
+    r.appendChild(head); r.appendChild(body);
+    if(rc.id!=null){ var foot=document.createElement('div'); foot.className='cfoot'; foot.appendChild(makeLikeButton(rc)); r.appendChild(foot); }
+    return r;
+  }
+  function submitReply(parentId, f, ta, nm, post, note, rwrap){
+    var t=ta.value.trim(); if(!t){ note.textContent='Please write a reply first.'; return; }
+    var token=''; try{ token=turnstile.getResponse(f.__widget); }catch(e){}
+    if(!token){ note.textContent='Please complete the verification check first.'; return; }
+    var name=(nm.value.trim()||'Anonymous Visitor').slice(0,40);
+    post.disabled=true; post.textContent='Posting...';
+    fetch(CONFIG.FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+CONFIG.SUPABASE_ANON_KEY},body:JSON.stringify({name:name, body:t, token:token, parent_id:parentId})})
+      .then(function(r){ return r.json().then(function(j){ return {ok:r.ok,j:j}; }); })
+      .then(function(res){
+        post.disabled=false; post.textContent='Post reply';
+        try{ turnstile.reset(f.__widget); }catch(e){}
+        if(res.ok){
+          if(rwrap){ rwrap.appendChild(makeReply({who:name, body:t.slice(0,600), when:Date.now()})); }
+          ta.value=''; nm.value=''; note.textContent='Reply posted.'; f.style.display='none';
+          cloudFetch(); setTimeout(cloudFetch,1500);
+        } else { note.textContent=(res.j&&res.j.error)?res.j.error:'Something went wrong. Please try again.'; }
+      })
+      .catch(function(){ post.disabled=false; post.textContent='Post reply'; note.textContent='Network error. Please try again.'; });
+  }
+  function buildReplyForm(parentId, rwrap){
+    var f=document.createElement('div'); f.className='creplyform'; f.style.display='none'; f.__widget=null;
+    var ta=document.createElement('textarea'); ta.maxLength=600; ta.placeholder='Write a reply...'; ta.setAttribute('aria-label','Your reply');
+    var row=document.createElement('div'); row.className='crow';
+    var nm=document.createElement('input'); nm.maxLength=40; nm.className='cname'; nm.placeholder='Your name (optional)'; nm.setAttribute('aria-label','Your name');
+    var post=document.createElement('button'); post.type='button'; post.className='gbk-btn'; post.textContent='Post reply';
+    row.appendChild(nm); row.appendChild(post);
+    var slot=document.createElement('div'); slot.className='recaptcha-slot'; f.__slot=slot;
+    var note=document.createElement('div'); note.className='cnote';
+    f.appendChild(ta); f.appendChild(row); f.appendChild(slot); f.appendChild(note);
+    post.addEventListener('click',function(){ submitReply(parentId, f, ta, nm, post, note, rwrap); });
+    return f;
+  }
+  function toggleReplyForm(f){
+    if(f.style.display!=='none'){ f.style.display='none'; return; }
+    f.style.display='block';
+    if(f.__widget==null && window.turnstile){ try{ f.__widget=turnstile.render(f.__slot,{sitekey:CONFIG.TURNSTILE_SITE_KEY,theme:'dark'}); }catch(e){} }
+  }
+  function makeItem(c, replies){
     var d=document.createElement('div'); d.className='citem'+(c.pinned?' pinned':'');
     if(c.pinned){ var p=document.createElement('div'); p.className='cpin'; p.textContent='pinned'; d.appendChild(p); }
     var head=document.createElement('div'); head.className='chead';
@@ -1856,19 +1925,31 @@
     d.appendChild(head); d.appendChild(body);
     if(c.id!=null){
       var foot=document.createElement('div'); foot.className='cfoot';
-      var btn=document.createElement('button'); btn.type='button'; btn.className='clike'+(likedSet().indexOf(String(c.id))>-1?' liked':'');
-      btn.setAttribute('aria-label','Like this entry');
-      btn.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg><span class="clike-n">'+(c.likes||0)+'</span>';
-      btn.addEventListener('click',function(){ likeComment(c.id, btn); });
-      foot.appendChild(btn); d.appendChild(foot);
+      var rbtn=null;
+      if(cloud && !c.pinned){ rbtn=document.createElement('button'); rbtn.type='button'; rbtn.className='creply-btn'; rbtn.textContent='Reply'; foot.appendChild(rbtn); }
+      foot.appendChild(makeLikeButton(c));
+      d.appendChild(foot);
+      if(cloud && !c.pinned){
+        var rwrap=document.createElement('div'); rwrap.className='creplies';
+        (replies||[]).forEach(function(rc){ rwrap.appendChild(makeReply(rc)); });
+        d.appendChild(rwrap);
+        var form=buildReplyForm(c.id, rwrap);
+        d.appendChild(form);
+        rbtn.addEventListener('click',function(){ toggleReplyForm(form); });
+      }
     }
     return d;
   }
   function renderList(items){
     var list=$('clist'); list.innerHTML='';
     list.appendChild(makeItem({who:'The Curators',pinned:true,body:'Welcome to the visitors\u2019 book. Whatever shape you hold the world to be, you are welcome here. Sign with kindness, and tell us what you saw.'}));
-    if(!items.length){ var e=document.createElement('div'); e.className='citem'; var ep=document.createElement('p'); ep.className='cempty'; ep.textContent='No visitor entries yet. Yours could be the first.'; e.appendChild(ep); list.appendChild(e); }
-    items.forEach(function(c){ list.appendChild(makeItem(c)); });
+    var tops=[], byParent={};
+    (items||[]).forEach(function(c){ if(c.parent_id==null){ tops.push(c); } else { (byParent[c.parent_id]=byParent[c.parent_id]||[]).push(c); } });
+    if(!tops.length){ var e=document.createElement('div'); e.className='citem'; var ep=document.createElement('p'); ep.className='cempty'; ep.textContent='No visitor entries yet. Yours could be the first.'; e.appendChild(ep); list.appendChild(e); }
+    tops.forEach(function(c){
+      var repl=(byParent[c.id]||[]).slice().sort(function(a,b){ return new Date(a.when)-new Date(b.when); });
+      list.appendChild(makeItem(c, repl));
+    });
   }
 
   /* ============================================================
@@ -1889,21 +1970,21 @@
 
     function fetchComments(){
       var base=CONFIG.SUPABASE_URL.replace(/\/$/,'');
-      var q='&approved=eq.true&order=created_at.desc&limit=200';
+      var q='&approved=eq.true&order=created_at.desc&limit=500';
       var hdr={headers:{apikey:CONFIG.SUPABASE_ANON_KEY,Authorization:'Bearer '+CONFIG.SUPABASE_ANON_KEY}};
-      /* Rich select (with id + likes). Falls back to the basic columns if
-         the likes column has not been added in Supabase yet, so the book
-         keeps working either way. */
-      fetch(base+'/rest/v1/comments?select=id,name,body,created_at,likes'+q,hdr)
-        .then(function(r){ if(!r.ok) throw 0; return r.json(); })
-        .then(function(rows){ renderList((rows||[]).map(function(x){ return {id:x.id, who:x.name, body:x.body, when:x.created_at, likes:x.likes}; })); })
-        .catch(function(){
-          fetch(base+'/rest/v1/comments?select=name,body,created_at'+q,hdr)
-            .then(function(r){ return r.ok?r.json():[]; })
-            .then(function(rows){ renderList((rows||[]).map(function(x){ return {who:x.name, body:x.body, when:x.created_at}; })); })
-            .catch(function(){ renderList([]); });
-        });
+      /* Progressive select: replies (parent_id) + likes if present, then
+         likes only, then the basic columns — so the book keeps working at
+         every stage of the Supabase setup. */
+      var sels=['id,name,body,created_at,likes,parent_id','id,name,body,created_at,likes','name,body,created_at'];
+      function tryAt(i){
+        fetch(base+'/rest/v1/comments?select='+sels[i]+q,hdr)
+          .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+          .then(function(rows){ renderList((rows||[]).map(function(x){ return {id:x.id, who:x.name, body:x.body, when:x.created_at, likes:x.likes, parent_id:x.parent_id}; })); })
+          .catch(function(){ if(i+1<sels.length){ tryAt(i+1); } else { renderList([]); } });
+      }
+      tryAt(0);
     }
+    cloudFetch = fetchComments;
 
     $('c-post').addEventListener('click',function(){
       var msg=$('cnote');
