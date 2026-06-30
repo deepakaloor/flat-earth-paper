@@ -1,4 +1,63 @@
+# Flat Earth Paper — robots.txt
+# Open to everyone, including search engines and AI / answer / generative engines.
+
 User-agent: *
 Allow: /
 
+# Search, answer-engine and generative-AI crawlers are explicitly welcome to
+# read, index and cite this site.
+User-agent: Googlebot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
 Sitemap: https://flatearthpaper.com/sitemap.xml
+
+# Structured summary for LLMs / generative engines:
+# https://flatearthpaper.com/llms.txt
