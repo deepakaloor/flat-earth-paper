@@ -7,6 +7,7 @@ Flat Earth Paper gathers the flat-earth case in one place: a 3D model you can ro
 ## Pages
 - [Home — the exhibition](https://flatearthpaper.com/): the interactive 3D flat-earth model (disc, firmament dome, ice wall, local sun and moon), the history of the belief across cultures, and an overview of the arguments.
 - [The Megathread](https://flatearthpaper.com/megathread): all 133 flat-earth arguments, searchable and filterable, across 9 clusters — the eye and the horizon; sun, moon and stars; motion and forces; maps, flights and the edge; the maps and the models; the firmament and the sky; space, cameras and trust; scripture and the ancients; and the belief around the world.
+- [The Visitors' Book](https://flatearthpaper.com/guestbook): a shared, public guestbook where readers — flat, round or simply curious — leave a note. The same entries appear in the exhibit and the megathread; every entry passes a human check before it shows.
 - [Privacy Policy](https://flatearthpaper.com/privacy)
 - [Terms of Use](https://flatearthpaper.com/terms)
 
