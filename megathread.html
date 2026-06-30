@@ -226,6 +226,10 @@
   .wiki-k{font-family:var(--mono);font-size:9.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--brass);}
   .wiki-a{font-size:12.5px;color:var(--brass-bright);text-decoration:none;border-bottom:1px solid rgba(200,162,76,0.32);padding-bottom:1px;}
   .wiki-a:hover{border-bottom-color:var(--brass-bright);}
+  /* Further-reading in the feed (swipe) view */
+  .fs-wiki{margin:14px 0 0;display:flex;flex-wrap:wrap;gap:8px 14px;}
+  .fs-wiki-a{font-family:var(--mono);font-size:12px;letter-spacing:0.03em;color:var(--brass-bright);text-decoration:none;border-bottom:1px solid rgba(200,162,76,0.4);padding-bottom:1px;}
+  .fs-wiki-a:hover{border-bottom-color:var(--brass-bright);}
 
   /* guestbook (shared with the homepage) */
   .mt-guest{padding:46px 0 8px;scroll-margin-top:124px;}
@@ -941,6 +945,7 @@
           '<h3 class="fs-title">'+a.t+'</h3>'+
           '<p class="fs-body">'+a.b+'</p>'+
           (a.r?'<p class="fs-region"><span>Heard in</span> '+a.r+'</p>':'')+
+          (a.w?'<p class="fs-wiki">'+a.w.map(function(p){return '<a class="fs-wiki-a" href="'+p[1]+'" target="_blank" rel="noopener noreferrer">'+p[0]+' ↗</a>';}).join('')+'</p>':'')+
           '<div class="fs-actions">'+
             '<button class="fs-btn fs-save'+(isSaved(a.n)?' on':'')+'" data-n="'+a.n+'" type="button" aria-label="Save">'+FS_STAR+'<span>Save</span></button>'+
             '<button class="fs-btn fs-share" data-n="'+a.n+'" type="button" aria-label="Share">'+FS_SHARE+'<span>Share</span></button>'+
